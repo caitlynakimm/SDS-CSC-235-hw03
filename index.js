@@ -299,20 +299,6 @@ let myData = [
     }
   ]
 
-d3.select("#container")
-  .selectAll("rect")
-  .data(myData)
-  .join("rect")
-  .attr("x", function(d, i){
-      return i*100;
-  })
-  .attr("height", function(d, i){
-      return (1530-d.total_millions);
-  })
-  .attr("y", 10)
-  .attr("width", 50);
-
-
 let height = 300;
 let width = 300;
 let margin = 50;
@@ -326,15 +312,24 @@ let linearScale = d3.scaleLinear()
                       .domain([0, 2.00])
                       .range([height - margin, margin]);
 
-let bandScale = scaleBand()
-                  .domain(['apple', 'orange', 'pear'])
+let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
+let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
+console.log(famData);
+
+let bandScale = d3.scaleBand()
+                  .domain(famData.map(d => d.family))
                   .range([margin, width - margin]);
 
 bandScale.paddingInner(0.05);
 
 frame.append("g")
-        .attr("transform", 'translate(${margin},0)')
+        .attr("transform", `translate(${margin},0)`)
         .call(d3.axisLeft(linearScale))
-        .call(d3.axisBottom(bandScale));            
+        .call(d3.axisBottom(bandScale)); 
 
-let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
+d3.select("#container")
+  .selectAll("rect")
+  .data(famData)
+  .join("rect")
+  .attr("x", d => bandScale(d.family))
+  .attr("width", d3.scaleBand().bandwidth());
