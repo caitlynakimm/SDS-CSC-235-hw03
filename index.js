@@ -298,3 +298,43 @@ let myData = [
       "total_millions": "52"
     }
   ]
+
+d3.select("#container")
+  .selectAll("rect")
+  .data(myData)
+  .join("rect")
+  .attr("x", function(d, i){
+      return i*100;
+  })
+  .attr("height", function(d, i){
+      return (1530-d.total_millions);
+  })
+  .attr("y", 10)
+  .attr("width", 50);
+
+
+let height = 300;
+let width = 300;
+let margin = 50;
+
+let frame = d3.select("#frame")
+                .append("svg")
+                .attr("width", width)
+                .attr("height", height)
+
+let linearScale = d3.scaleLinear()
+                      .domain([0, 2.00])
+                      .range([height - margin, margin]);
+
+let bandScale = scaleBand()
+                  .domain(['apple', 'orange', 'pear'])
+                  .range([margin, width - margin]);
+
+bandScale.paddingInner(0.05);
+
+frame.append("g")
+        .attr("transform", 'translate(${margin},0)')
+        .call(d3.axisLeft(linearScale))
+        .call(d3.axisBottom(bandScale));            
+
+let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
