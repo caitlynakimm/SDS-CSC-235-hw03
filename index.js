@@ -299,11 +299,11 @@ let myData = [
     }
   ]
 
-let width = 1100;
-let height = 1500;
-let margin = 50;
+let widthOne = 1100;
+let heightOne = 1500;
+let marginOne = 50;
 
-let frame = d3.select("#frame svg");
+let frameOne = d3.select("#frameOne svg");
 
 let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
@@ -316,27 +316,27 @@ famData.sort(function(a, b) {
 
 let xAxis = d3.scaleBand()
                   .domain(famData.map(d => d.family))
-                  .range([margin, width - margin]);
+                  .range([marginOne, widthOne - marginOne]);
 
 xAxis.paddingInner(0.10);
 
 
 let yAxis = d3.scaleLinear()
               .domain([0, d3.max(famData, d => d.count)])
-              .range([height - margin, margin]);
+              .range([heightOne - marginOne, marginOne]);
 
 var colorPalette = d3.scaleOrdinal()
             .domain(famData.map(d => d.family))
             .range(d3.schemeCategory10);
 
-d3.select("#container")
+d3.select("#containerOne")
   .selectAll("rect")
   .data(famData)
   .join("rect")
   .attr("x", d => xAxis(d.family))
   .attr("width", xAxis.bandwidth())
   .attr("y", d => yAxis(d.count)) /* gives top of the bar, yAxis() outputs pixel position of top of bar */
-  .attr("height", d => (height - margin) - yAxis(d.count)) /* height is calculated by bottom - top */
+  .attr("height", d => (heightOne - marginOne) - yAxis(d.count)) /* heightOne is calculated by bottom - top */
   .attr("fill", function(d) {
     return colorPalette(d.family);
   })
@@ -345,38 +345,71 @@ d3.select("#container")
     d3.select(this).classed("highlighted", !isHighlighted); /* if bar has class, unhighlights/removes class, else highlights/adds class to bar */
   });
 
-/*moves y-axis to the right to the margin */
-frame.append("g")
-        .attr("transform", `translate(${margin}, 0)`)
+/*moves y-axis to the right to the marginOne */
+frameOne.append("g")
+        .attr("transform", `translate(${marginOne}, 0)`)
         .call(d3.axisLeft(yAxis));
 
 /*moves x-axis to the bottom of the bar chart */
-frame.append("g")
-        .attr("transform", `translate(0, ${height-margin})`)
+frameOne.append("g")
+        .attr("transform", `translate(0, ${heightOne-marginOne})`)
         .call(d3.axisBottom(xAxis)) 
         .style("font-size", "13px");
 
 /*x-axis title*/
-frame.append("text")
-    .attr("x", width/2)
-    .attr("y", height - (margin/12))
+frameOne.append("text")
+    .attr("x", widthOne/2)
+    .attr("y", heightOne - (marginOne/12))
     .attr("text-anchor", "middle")
     .text("Language Family")
     .style("font-size", "18px");
 
 /*y-axis title*/
-frame.append("text")
-    .attr("x", -(height/2))
-    .attr("y", margin/4)
+frameOne.append("text")
+    .attr("x", -(heightOne/2))
+    .attr("y", marginOne/4)
     .attr("text-anchor", "middle")
     .attr("transform", `rotate(-90)`)
     .text("Frequency")
     .style("font-size", "18px");
 
 /*bar chart title*/
-frame.append("text")
-    .attr("x", width/2)
-    .attr("y", margin/2)
+frameOne.append("text")
+    .attr("x", widthOne/2)
+    .attr("y", marginOne/2)
     .attr("text-anchor", "middle")
     .text("Distribution of Language Families")
     .style("font-size", "25px");
+
+let widthTwo = 500;
+let heightTwo = 500;
+let marginTwo = 40;
+let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo;
+
+// let frameTwo = d3.select("#frameTwo svg");
+
+// frameTwo.append("g")
+//   .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
+
+let pie = d3.pie()
+            .value(function(d) {
+              return d.count;
+            });
+let famPieData = pie(famData);
+console.log(famPieData);
+
+d3.select("#containerTwo")
+  .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
+  .selectAll("path")
+  .data(famPieData)
+  .join("path")
+  .attr("fill", function(d) {
+    return colorPalette(d.data.family);
+  })
+  .attr('d', d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius)
+  )
+  .attr('stroke', "black");
+
+

@@ -6,7 +6,7 @@ body {
     text-align: center;
 }
 
-#frame {
+#frameOne {
     display: flex;
     justify-content: center;
 }
@@ -17,3 +17,10 @@ body {
     stroke-width: 3px;
     filter: blur(3px);
 }
+
+#frameTwo {
+    display: flex;
+    justify-content: center;
+}
+
+/*add highlight effect to selected pie slices */
