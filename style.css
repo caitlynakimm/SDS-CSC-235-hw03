@@ -5,3 +5,9 @@ body {
 .important {
     text-align: center;
 }
+
+#frame {
+    display: flex;
+    justify-content: center;
+}
+

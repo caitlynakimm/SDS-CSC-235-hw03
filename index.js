@@ -299,18 +299,11 @@ let myData = [
     }
   ]
 
-let height = 300;
-let width = 300;
+let width = 1100;
+let height = 1500;
 let margin = 50;
 
-let frame = d3.select("#frame")
-                .append("svg")
-                .attr("width", width)
-                .attr("height", height)
-
-let linearScale = d3.scaleLinear()
-                      .domain([0, 2.00])
-                      .range([height - margin, margin]);
+let frame = d3.select("#frame svg");
 
 let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
@@ -320,16 +313,55 @@ let bandScale = d3.scaleBand()
                   .domain(famData.map(d => d.family))
                   .range([margin, width - margin]);
 
-bandScale.paddingInner(0.05);
+bandScale.paddingInner(0.10);
 
-frame.append("g")
-        .attr("transform", `translate(${margin},0)`)
-        .call(d3.axisLeft(linearScale))
-        .call(d3.axisBottom(bandScale)); 
+
+let yAxis = d3.scaleLinear()
+              .domain([0, d3.max(famData, d => d.count)])
+              .range([height - margin, margin]);
 
 d3.select("#container")
   .selectAll("rect")
   .data(famData)
   .join("rect")
   .attr("x", d => bandScale(d.family))
-  .attr("width", d3.scaleBand().bandwidth());
+  .attr("width", bandScale.bandwidth())
+  .attr("y", d => yAxis(d.count)) /* gives top of the bar, yAxis() outputs pixel position of top of bar */
+  .attr("height", d => (height - margin) - yAxis(d.count)) /* height is calculated by bottom - top */
+  .attr("fill", "darkblue");
+
+/*moves y-axis to the right to the margin */
+frame.append("g")
+        .attr("transform", `translate(${margin}, 0)`)
+        .call(d3.axisLeft(yAxis));
+
+/*moves x-axis to the bottom of the bar chart */
+frame.append("g")
+        .attr("transform", `translate(0, ${height-margin})`)
+        .call(d3.axisBottom(bandScale)) 
+        .style("font-size", "13px");
+
+/*x-axis title*/
+frame.append("text")
+    .attr("x", width/2)
+    .attr("y", height - (margin/10))
+    .attr("text-anchor", "middle")
+    .text("Language Family")
+    .style("font-size", "18px");
+
+/*y-axis title*/
+frame.append("text")
+    .attr("x", -(height/2))
+    .attr("y", margin/4)
+    .attr("text-anchor", "middle")
+    .attr("transform", `rotate(-90)`)
+    .text("Frequency")
+    .style("font-size", "18px");
+
+/*bar chart title*/
+frame.append("text")
+    .attr("x", width/2)
+    .attr("y", margin/2)
+    .attr("text-anchor", "middle")
+    .text("Distribution of Language Families")
+    .style("font-size", "25px");
