@@ -309,26 +309,41 @@ let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
 console.log(famData);
 
-let bandScale = d3.scaleBand()
+//sort famData from greatest to lowest frequency
+famData.sort(function(a, b) {
+  return b.count - a.count;
+});
+
+let xAxis = d3.scaleBand()
                   .domain(famData.map(d => d.family))
                   .range([margin, width - margin]);
 
-bandScale.paddingInner(0.10);
+xAxis.paddingInner(0.10);
 
 
 let yAxis = d3.scaleLinear()
               .domain([0, d3.max(famData, d => d.count)])
               .range([height - margin, margin]);
 
+var colorPalette = d3.scaleOrdinal()
+            .domain(famData.map(d => d.family))
+            .range(d3.schemeCategory10);
+
 d3.select("#container")
   .selectAll("rect")
   .data(famData)
   .join("rect")
-  .attr("x", d => bandScale(d.family))
-  .attr("width", bandScale.bandwidth())
+  .attr("x", d => xAxis(d.family))
+  .attr("width", xAxis.bandwidth())
   .attr("y", d => yAxis(d.count)) /* gives top of the bar, yAxis() outputs pixel position of top of bar */
   .attr("height", d => (height - margin) - yAxis(d.count)) /* height is calculated by bottom - top */
-  .attr("fill", "darkblue");
+  .attr("fill", function(d) {
+    return colorPalette(d.family);
+  })
+  .on("click", function(event, d) {
+    let isHighlighted = d3.select(this).classed("highlighted"); /* checks if clicked on bar has highlighted class attribute */
+    d3.select(this).classed("highlighted", !isHighlighted); /* if bar has class, unhighlights/removes class, else highlights/adds class to bar */
+  });
 
 /*moves y-axis to the right to the margin */
 frame.append("g")
@@ -338,13 +353,13 @@ frame.append("g")
 /*moves x-axis to the bottom of the bar chart */
 frame.append("g")
         .attr("transform", `translate(0, ${height-margin})`)
-        .call(d3.axisBottom(bandScale)) 
+        .call(d3.axisBottom(xAxis)) 
         .style("font-size", "13px");
 
 /*x-axis title*/
 frame.append("text")
     .attr("x", width/2)
-    .attr("y", height - (margin/10))
+    .attr("y", height - (margin/12))
     .attr("text-anchor", "middle")
     .text("Language Family")
     .style("font-size", "18px");

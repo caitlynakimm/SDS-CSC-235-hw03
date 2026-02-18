@@ -11,3 +11,9 @@ body {
     justify-content: center;
 }
 
+.highlighted {
+    fill: rgb(247, 199, 26);
+    stroke: black;
+    stroke-width: 3px;
+    filter: blur(3px);
+}
