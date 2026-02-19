@@ -23,4 +23,6 @@ body {
     justify-content: center;
 }
 
-/*add highlight effect to selected pie slices */
+.pathHighlight {
+    transform: scale(1.15);
+}

@@ -343,7 +343,9 @@ d3.select("#containerOne")
   .on("click", function(event, d) {
     let isHighlighted = d3.select(this).classed("highlighted"); /* checks if clicked on bar has highlighted class attribute */
     d3.select(this).classed("highlighted", !isHighlighted); /* if bar has class, unhighlights/removes class, else highlights/adds class to bar */
-  });
+  })
+  .attr("stroke", "black")
+  .attr("stroke-width", "2px");
 
 /*moves y-axis to the right to the marginOne */
 frameOne.append("g")
@@ -385,11 +387,8 @@ let widthTwo = 500;
 let heightTwo = 500;
 let marginTwo = 40;
 let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo;
-
-// let frameTwo = d3.select("#frameTwo svg");
-
-// frameTwo.append("g")
-//   .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
+let totalCount = d3.sum(famData, d => d.count);
+console.log(totalCount);
 
 let pie = d3.pie()
             .value(function(d) {
@@ -398,18 +397,34 @@ let pie = d3.pie()
 let famPieData = pie(famData);
 console.log(famPieData);
 
+let arcMaker = d3.arc()
+    .innerRadius(0)
+    .outerRadius(radius);
+
 d3.select("#containerTwo")
   .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
   .selectAll("path")
   .data(famPieData)
   .join("path")
+  .attr("d", arcMaker)
   .attr("fill", function(d) {
     return colorPalette(d.data.family);
   })
-  .attr('d', d3.arc()
-    .innerRadius(0)
-    .outerRadius(radius)
-  )
-  .attr('stroke', "black");
+  .attr("stroke", "black")
+  .attr("stroke-width", "2px")
+  .on("click", function(event, d) {
+    let isPathClicked = d3.select(this).classed("pathHighlight");
+    d3.select(this).classed("pathHighlight", !isPathClicked); 
+  });
 
+
+d3.select("#containerTwo")
+  .selectAll("text").filter(this.)
+  .data(famPieData)
+  .join("text")
+  .style("opacity", 0)
+  .attr("transform", function(d) {
+    return "translate(" + arcMaker.centroid(d) + ")";
+  })
+  .text(d => `${d.data.family}: ${d.data.count}/${totalCount}`);
 
