@@ -299,8 +299,8 @@ let myData = [
     }
   ]
 
-let widthOne = 1100;
-let heightOne = 1500;
+let widthOne = 1400;
+let heightOne = 1600;
 let marginOne = 50;
 
 let frameOne = d3.select("#frameOne svg");
@@ -318,7 +318,7 @@ let xAxis = d3.scaleBand()
                   .domain(famData.map(d => d.family))
                   .range([marginOne, widthOne - marginOne]);
 
-xAxis.paddingInner(0.10);
+xAxis.paddingInner(0.15);
 
 
 let yAxis = d3.scaleLinear()
@@ -350,42 +350,45 @@ d3.select("#containerOne")
 /*moves y-axis to the right to the marginOne */
 frameOne.append("g")
         .attr("transform", `translate(${marginOne}, 0)`)
-        .call(d3.axisLeft(yAxis));
+        .call(d3.axisLeft(yAxis))
+        .style("font-size", "18px")
+        .style("stroke-width", "2px");
 
 /*moves x-axis to the bottom of the bar chart */
 frameOne.append("g")
         .attr("transform", `translate(0, ${heightOne-marginOne})`)
         .call(d3.axisBottom(xAxis)) 
-        .style("font-size", "13px");
+        .style("font-size", "15px")
+        .style("stroke-width", "2px");
 
 /*x-axis title*/
 frameOne.append("text")
     .attr("x", widthOne/2)
-    .attr("y", heightOne - (marginOne/12))
+    .attr("y", heightOne - (marginOne/10))
     .attr("text-anchor", "middle")
     .text("Language Family")
-    .style("font-size", "18px");
+    .style("font-size", "22px");
 
 /*y-axis title*/
 frameOne.append("text")
     .attr("x", -(heightOne/2))
-    .attr("y", marginOne/4)
+    .attr("y", marginOne/3)
     .attr("text-anchor", "middle")
     .attr("transform", `rotate(-90)`)
     .text("Frequency")
-    .style("font-size", "18px");
+    .style("font-size", "23px");
 
 /*bar chart title*/
 frameOne.append("text")
     .attr("x", widthOne/2)
     .attr("y", marginOne/2)
-    .attr("text-anchor", "middle")
-    .text("Distribution of Language Families")
-    .style("font-size", "25px");
+    .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
+    .text("Comparison of Language Families")
+    .style("font-size", "30px");
 
-let widthTwo = 500;
-let heightTwo = 500;
-let marginTwo = 40;
+let widthTwo = 600;
+let heightTwo = 600;
+let marginTwo = 50;
 let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo;
 let totalCount = d3.sum(famData, d => d.count);
 console.log(totalCount);
@@ -401,6 +404,15 @@ let arcMaker = d3.arc()
     .innerRadius(0)
     .outerRadius(radius);
 
+let frameTwo = d3.select("#frameTwo svg");
+
+frameTwo.append("text")
+    .attr("x", widthTwo/2)
+    .attr("y", marginTwo/2)
+    .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
+    .text("Frequency Proportions of Language Families")
+    .style("font-size", "30px");
+
 d3.select("#containerTwo")
   .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
   .selectAll("path")
@@ -414,17 +426,29 @@ d3.select("#containerTwo")
   .attr("stroke-width", "2px")
   .on("click", function(event, d) {
     let isPathClicked = d3.select(this).classed("pathHighlight");
-    d3.select(this).classed("pathHighlight", !isPathClicked); 
-  });
+    d3.select(this).classed("pathHighlight", !isPathClicked);  /*highlights path/pie piece by making it bigger */
 
+    d3.select("#containerTwo")
+      .selectAll("text")
+      .filter(textFam => textFam === d) /*search for text with same data object as path*/
+      .style("opacity", isPathClicked? 0 : 1) /*makes text appear or disappear based on if path was previously clicked on or not*/
+});
 
 d3.select("#containerTwo")
-  .selectAll("text").filter(this.)
+  .selectAll("text")
   .data(famPieData)
   .join("text")
+  .style("paint-order", "stroke")
+  .style("stroke", "white")
+  .style("stroke-width", "7px")
+  .style("stroke-linejoin", "round")
+  .style("font-size", "20px")
+  .style("fill", "black")
   .style("opacity", 0)
   .attr("transform", function(d) {
-    return "translate(" + arcMaker.centroid(d) + ")";
+    return "translate(" + arcMaker.centroid(d) + ")" /*places text elements to be at center of the paths*/
   })
-  .text(d => `${d.data.family}: ${d.data.count}/${totalCount}`);
+  .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
+  .attr("dominant-baseline", "middle") /*makes text vertically centered around a pt*/
+  .text(d => `${d.data.family}: ${d.data.count}/${totalCount}`); /*shows language family and its frequency proportion*/
 
