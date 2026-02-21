@@ -307,6 +307,7 @@ let frameOne = d3.select("#frameOne svg");
 
 let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
+
 console.log(famData);
 
 //sort famData from greatest to lowest frequency
@@ -391,6 +392,7 @@ let heightTwo = 600;
 let marginTwo = 50;
 let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo;
 let totalCount = d3.sum(famData, d => d.count);
+
 console.log(totalCount);
 
 let pie = d3.pie()
@@ -398,6 +400,7 @@ let pie = d3.pie()
               return d.count;
             });
 let famPieData = pie(famData);
+
 console.log(famPieData);
 
 let arcMaker = d3.arc()
