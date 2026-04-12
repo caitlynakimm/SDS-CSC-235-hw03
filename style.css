@@ -9,6 +9,8 @@ body {
 #frameOne {
     display: flex;
     justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .highlighted {
@@ -21,6 +23,8 @@ body {
 #frameTwo {
     display: flex;
     justify-content: center;
+    max-width: 900px;
+    margin: 0 auto;
 }
 
 .pathHighlight {

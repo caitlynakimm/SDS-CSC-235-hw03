@@ -299,11 +299,11 @@ let myData = [
     }
   ]
 
-let widthOne = 1400;
-let heightOne = 1600;
+let widthOne = 700;
+let heightOne = 800;
 let marginOne = 50;
 
-let frameOne = d3.select("#frameOne svg");
+let frameOne = d3.select("#frameOne svg")
 
 let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
@@ -360,6 +360,11 @@ frameOne.append("g")
         .attr("transform", `translate(0, ${heightOne-marginOne})`)
         .call(d3.axisBottom(xAxis)) 
         .style("font-size", "15px")
+        .selectAll("text")
+        .attr("transform", "rotate(-40)")
+        .attr("text-anchor", "end")
+        .attr("dx", "-7.5px")
+        .attr("dy", "7.5px")
         .style("stroke-width", "2px");
 
 /*x-axis title*/
@@ -407,14 +412,14 @@ let arcMaker = d3.arc()
     .innerRadius(0)
     .outerRadius(radius);
 
-let frameTwo = d3.select("#frameTwo svg");
+let frameTwo = d3.select("#frameTwo svg")
 
 frameTwo.append("text")
     .attr("x", widthTwo/2)
     .attr("y", marginTwo/2)
     .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
-    .text("Frequency Proportions of Language Families")
-    .style("font-size", "30px");
+    .text("Frequency of Language Families")
+    .style("font-size", "50px");
 
 d3.select("#containerTwo")
   .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
