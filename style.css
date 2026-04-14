@@ -2,32 +2,43 @@ body {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-.important {
-    text-align: center;
-}
-
 #chartsContainer {
+    margin-top: 40px;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: 20px;
+    align-items: center;
+    gap: 30px;
 }
 
-#frameOne {
-    width: 60%;
-}
-
-.highlighted {
-    fill: rgb(247, 199, 26);
-    stroke: black;
-    stroke-width: 3px;
-    filter: blur(3px);
-}
-
-#frameTwo {
+#barChart {
     width: 40%;
 }
 
-.pathHighlight {
-    transform: scale(1.15);
+#containerOne rect {
+    cursor: pointer;
+}
+
+.highlighted {
+    stroke: black;
+    stroke-width: 3px;
+    filter: brightness(1.2) saturate(1.35) drop-shadow(0px 0px 5px rgba(110, 109, 109, 0.7));
+}
+
+#pieChart {
+    width: 40%;
+}
+
+#containerTwo path {
+    cursor: pointer;
+}
+
+#tooltip {
+    position: fixed;
+    background-color: white;
+    padding: 5px;
+    border: black solid 1px;
+    border-radius: 5px;
+    font-size: 15px;
+    pointer-events: none; /* mouse clicks won't get intercepted by tooltip */
+    opacity: 0;
 }

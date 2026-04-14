@@ -303,7 +303,7 @@ let widthOne = 700;
 let heightOne = 800;
 let marginOne = 50;
 
-let frameOne = d3.select("#frameOne svg")
+let frameOne = d3.select("#barChart svg")
 
 let familyCounts = d3.rollup(myData, d => d.length, d => d.family);
 let famData = Array.from(familyCounts, ([key, value]) => ({family: key, count: value}));
@@ -328,7 +328,7 @@ let yAxis = d3.scaleLinear()
 
 var colorPalette = d3.scaleOrdinal()
             .domain(famData.map(d => d.family))
-            .range(d3.schemeCategory10);
+            .range(d3.schemePaired);
 
 d3.select("#containerOne")
   .selectAll("rect")
@@ -370,7 +370,7 @@ frameOne.append("g")
 /*x-axis title*/
 frameOne.append("text")
     .attr("x", widthOne/2)
-    .attr("y", heightOne - (marginOne/10))
+    .attr("y", heightOne + 70)
     .attr("text-anchor", "middle")
     .text("Language Family")
     .style("font-size", "22px");
@@ -389,13 +389,13 @@ frameOne.append("text")
     .attr("x", widthOne/2)
     .attr("y", marginOne/2)
     .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
-    .text("Comparison of Language Families")
+    .text("Frequency of Language Families")
     .style("font-size", "30px");
 
 let widthTwo = 600;
 let heightTwo = 600;
 let marginTwo = 50;
-let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo;
+let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo - 30;
 let totalCount = d3.sum(famData, d => d.count);
 
 console.log(totalCount);
@@ -412,17 +412,17 @@ let arcMaker = d3.arc()
     .innerRadius(0)
     .outerRadius(radius);
 
-let frameTwo = d3.select("#frameTwo svg")
+let frameTwo = d3.select("#pieChart svg")
 
 frameTwo.append("text")
     .attr("x", widthTwo/2)
     .attr("y", marginTwo/2)
     .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
-    .text("Frequency of Language Families")
-    .style("font-size", "50px");
+    .text("Proportions of Language Families")
+    .style("font-size", "30px");
 
 d3.select("#containerTwo")
-  .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2})`)
+  .attr("transform", `translate(${widthTwo/2}, ${heightTwo/2 + 60})`)
   .selectAll("path")
   .data(famPieData)
   .join("path")
@@ -433,30 +433,17 @@ d3.select("#containerTwo")
   .attr("stroke", "black")
   .attr("stroke-width", "2px")
   .on("click", function(event, d) {
-    let isPathClicked = d3.select(this).classed("pathHighlight");
-    d3.select(this).classed("pathHighlight", !isPathClicked);  /*highlights path/pie piece by making it bigger */
+    let isPathClicked = d3.select(this).classed("pathDescription");
+    
+    d3.selectAll("path").classed("pathDescription", false); /* gets rid of descriptions on all slices */
 
-    d3.select("#containerTwo")
-      .selectAll("text")
-      .filter(textFam => textFam === d) /*search for text with same data object as path*/
-      .style("opacity", isPathClicked? 0 : 1) /*makes text appear or disappear based on if path was previously clicked on or not*/
-});
-
-d3.select("#containerTwo")
-  .selectAll("text")
-  .data(famPieData)
-  .join("text")
-  .style("paint-order", "stroke")
-  .style("stroke", "white")
-  .style("stroke-width", "7px")
-  .style("stroke-linejoin", "round")
-  .style("font-size", "20px")
-  .style("fill", "black")
-  .style("opacity", 0)
-  .attr("transform", function(d) {
-    return "translate(" + arcMaker.centroid(d) + ")" /*places text elements to be at center of the paths*/
-  })
-  .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
-  .attr("dominant-baseline", "middle") /*makes text vertically centered around a pt*/
-  .text(d => `${d.data.family}: ${d.data.count}/${totalCount}`); /*shows language family and its frequency proportion*/
-
+    if (!isPathClicked) { /* if slice wasn't clicked before, corresponding description/stats appears on it*/
+      d3.select("#tooltip")
+        .style("opacity", 1)
+        .style("top", event.clientY + 10 + "px")
+        .style("left", event.clientX + 10 + "px")
+        .text(`${d.data.family}: ${d.data.count}/${totalCount}`);
+    } else { /* if slice was clicked before, hides description */
+      d3.select("#tooltip").style("opacity", 0);
+    }
+  });
