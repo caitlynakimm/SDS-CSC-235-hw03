@@ -8,7 +8,7 @@ In order to receive a regrade on this submission you **must** fully answer the f
 - Improved the highlighting effect for the bar chart (bar color becomes more brighter and saturated rather than fuzzy)
 - Made the bar chart smaller to fit page view
 - Changed color scheme to fit the 12 language family categories (doesn't repeat colors) for both charts
-- Added legend for language family names based on pie slice color (adding family names on/near slices would get very cluttered)
+- Added legend for language family names based on pie slice color (I realized adding family names on/around slices would get very cluttered)
 - Improved ease of clicking effect on pie chart slices (corresponding proportion appears in an organized layout)
 
 ## 2. Reflect on your experience prioritizing, working on, and completing this assignment. Moving forward, what changes will you make in these areas to work towards better first submissions of assignments? 
