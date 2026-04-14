@@ -418,7 +418,7 @@ frameTwo.append("text")
     .attr("x", widthTwo/2)
     .attr("y", marginTwo/2)
     .attr("text-anchor", "middle") /*makes text horizontally centered around a pt*/
-    .text("Proportions of Language Families")
+    .text("Proportion of Language Families")
     .style("font-size", "30px");
 
 d3.select("#containerTwo")
@@ -442,7 +442,7 @@ d3.select("#containerTwo")
         .style("opacity", 1)
         .style("top", event.clientY + 10 + "px")
         .style("left", event.clientX + 10 + "px")
-        .text(`${d.data.family}: ${d.data.count}/${totalCount}`);
+        .text(`${d.data.count}/${totalCount}`);
     } else { /* if slice was clicked before, hides description */
       d3.select("#tooltip").style("opacity", 0);
     }
