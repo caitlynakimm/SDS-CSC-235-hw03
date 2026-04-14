@@ -5,3 +5,4 @@
 - https://d3-graph-gallery.com/graph/pie_annotation.html
 - https://d3-graph-gallery.com/graph/interactivity_tooltip.html
 - https://www.geeksforgeeks.org/html/svg-viewbox-attribute/
+- https://observablehq.com/@sengokyu/d3-js-basic-pie-chart-with-legend

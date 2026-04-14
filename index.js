@@ -360,6 +360,7 @@ frameOne.append("g")
         .attr("transform", `translate(0, ${heightOne-marginOne})`)
         .call(d3.axisBottom(xAxis)) 
         .style("font-size", "15px")
+        .style("font-family", "Georgia, 'Times New Roman', Times, serif")
         .selectAll("text")
         .attr("transform", "rotate(-40)")
         .attr("text-anchor", "end")
@@ -395,7 +396,7 @@ frameOne.append("text")
 let widthTwo = 600;
 let heightTwo = 600;
 let marginTwo = 50;
-let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo - 30;
+let radius = Math.min(widthTwo, heightTwo) / 2 - marginTwo - 40;
 let totalCount = d3.sum(famData, d => d.count);
 
 console.log(totalCount);
@@ -447,3 +448,30 @@ d3.select("#containerTwo")
       d3.select("#tooltip").style("opacity", 0);
     }
   });
+
+let labelHeight = 14;
+
+let legend = frameTwo
+            .append("g")
+            .attr("transform", `translate(${widthTwo - 30}, 220)`);
+
+legend
+    .selectAll(null)
+    .data(famPieData)
+    .enter()
+    .append("rect")
+    .attr("y", d => labelHeight * d.index * 1.8)
+    .attr("width", labelHeight)
+    .attr("height", labelHeight)
+    .attr("fill", d => colorPalette(d.data.family))
+    .attr("stroke", "black");
+
+legend
+    .selectAll(null)
+    .data(famPieData)
+    .enter()
+    .append("text")
+    .text(d => d.data.family)
+    .attr("x", labelHeight * 1.5)
+    .attr("y", d => labelHeight * d.index * 1.8 + labelHeight)
+    .style("font-size", "15px");
